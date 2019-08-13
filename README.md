@@ -1,6 +1,6 @@
 ## auto set JAVA_OPTS in docker and kubernetes
 
-### user
+### use
 
 ```
 docker build . -f jar.ubuntu.Dockerfile -t jvm:ubuntu
