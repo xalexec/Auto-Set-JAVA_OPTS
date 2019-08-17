@@ -141,8 +141,8 @@ get_print () {
     echo $print
 }
 
+# oom heap dump 设置
 get_oom_dump () {
-    # oom heap dump 设置
     dump=""
     if [ $OOM_DUMP = "true" ]; then
         dump="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$UNIFIED_OUTPUT_PATH/$HOSTNAME.dump"
@@ -150,8 +150,8 @@ get_oom_dump () {
     echo $dump
 }
 
+# 远程调试 设置
 get_remote_debug () {
-    # oom heap dump 设置
     remote=""
     if [ $REMOTE_DEBUG = "true" ]; then
         remote="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$REMOTE_DEBUG_PORT"
