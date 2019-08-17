@@ -13,12 +13,16 @@ APP_NAME=${APP_NAME:-"app.jar"}
 OOM_DUMP=${OOM_DUMP:-"true"}
 # 是否开记打印
 DEBUG_PRINT=${DEBUG_PRINT:-"false"}
+# 远程调试
+REMOTE_DEBUG=${REMOTE_DEBUG:-"true"}
+# 远程调试端口
+REMOTE_DEBUG_PORT=${REMOTE_DEBUG_PORT:-5005}
 # 是SPRING_BOOT jar 应用还是 war 应用
 SPRING_BOOT=${SPRING_BOOT:-"true"}
 # 默认内存
-DEFAULT_MEMORY=${DEFAULT_MEMORY:-"2048"}
-# 默认 CPU
-DEFAULT_CPU=${DEFAULT_CPU:-"1"}
+DEFAULT_MEMORY=${DEFAULT_MEMORY:-2048}
+# 默认 CPU cfs_quota_us = -1
+DEFAULT_CPU=${DEFAULT_CPU:-1}
 # 默认输出目录
 UNIFIED_OUTPUT_PATH=${UNIFIED_OUTPUT_PATH:-"/data"}
 if [ ! -d "$UNIFIED_OUTPUT_PATH" ]; then
@@ -42,12 +46,10 @@ calc_limit_cpu () {
     limit_cpu=$DEFAULT_CPU # default
     period=$(cat /sys/fs/cgroup/cpu/cpu.cfs_period_us)
     quota=$(cat /sys/fs/cgroup/cpu/cpu.cfs_quota_us)
-    if [ $quota -eq -1 ]; then
-        limit_cpu=2
-    else
+    if [ ! $quota -eq -1 ]; then
         cpu=$(expr $quota \/ $period)
         if [ $cpu -gt 1 ]; then
-            limit_cpu=cpu
+            limit_cpu=$cpu
         fi
     fi
     echo $limit_cpu
@@ -148,13 +150,23 @@ get_oom_dump () {
     echo $dump
 }
 
+get_remote_debug () {
+    # oom heap dump 设置
+    remote=""
+    if [ $REMOTE_DEBUG = "true" ]; then
+        remote="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$REMOTE_DEBUG_PORT"
+    fi
+    echo $remote
+}
+
 get_java_opts () {
     heap_size=`get_heap_size`
     metaspace_size=`get_metaspace_size`
     gc=`get_gc`
     oom_dump=`get_oom_dump`
     print=`get_print`
-    echo "$heap_size $metaspace_size $gc $oom_dump $print $JAVA_OPTS"
+    remote_debug=`get_remote_debug`
+    echo "$heap_size $metaspace_size $gc $oom_dump $print $remote_debug $JAVA_OPTS"
 }
 
 JAVA_OPTS=`get_java_opts`

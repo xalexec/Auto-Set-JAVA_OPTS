@@ -2,16 +2,15 @@ FROM adoptopenjdk/openjdk8:alpine
 
 LABEL author="alex <xalexec@gmail.com>"
 
-ENV SPRING_BOOT="true" \
-    DEBUG_PRINT="ture" \
-    APP_NAME="app.jar" 
-
 VOLUME /data
 
-# 清理
-# 修改时区
 RUN set -eux; \
-  ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+  sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories; \ 
+  # 设置时区
+  date;\
+  apk add tzdata; \
+  ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime;\
+  date;
 
 # 拷 war 包
 COPY app.jar app.jar
