@@ -24,10 +24,8 @@ deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe 
 deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse' > /etc/apt/sources.list; \
   apt-get update; \
   # 设置时区
-  date;\
   apt-get install -y --no-install-recommends tzdata; \
   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
-  date;\
   rm -rf /var/lib/apt/lists/*; \
   rm -rf webapps/*;
 

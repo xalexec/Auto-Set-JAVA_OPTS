@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine
+FROM amazoncorretto:8
 
 LABEL author="alex <xalexec@gmail.com>"
 
@@ -12,12 +12,9 @@ RUN set -eux; \
 VOLUME /data
 
 RUN set -eux; \
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories; \ 
-  # 设置时区
-  apk add tzdata; \
   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime;
 
-# 拷 war 包
+# 拷 jar 包
 COPY app.jar app.jar
 
 COPY entrypoint.sh entrypoint.sh

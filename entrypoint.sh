@@ -4,9 +4,6 @@ set -eu
 # email:xalexec@gmail.com
 # 此文件主要用来设置 JVM 参数
 
-# hotspot="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap";
-# openj9="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle"
-
 # 应用名
 APP_NAME=${APP_NAME:-"app.jar"}
 # 是否开启 Dump
@@ -14,7 +11,7 @@ OOM_DUMP=${OOM_DUMP:-"true"}
 # 是否开记打印
 DEBUG_PRINT=${DEBUG_PRINT:-"false"}
 # 远程调试
-REMOTE_DEBUG=${REMOTE_DEBUG:-"true"}
+REMOTE_DEBUG=${REMOTE_DEBUG:-"false"}
 # 远程调试端口
 REMOTE_DEBUG_PORT=${REMOTE_DEBUG_PORT:-5005}
 # 是SPRING_BOOT jar 应用还是 war 应用
@@ -23,12 +20,14 @@ SPRING_BOOT=${SPRING_BOOT:-"true"}
 DEFAULT_MEMORY=${DEFAULT_MEMORY:-2048}
 # 默认 CPU cfs_quota_us = -1
 DEFAULT_CPU=${DEFAULT_CPU:-1}
+# 默认时区
+DEFAULT_TIMEZONE=${DEFAULT_CPU:-"GMT+08"}
 # 默认输出目录
 UNIFIED_OUTPUT_PATH=${UNIFIED_OUTPUT_PATH:-"/data"}
 if [ ! -d "$UNIFIED_OUTPUT_PATH" ]; then
   mkdir -p "$UNIFIED_OUTPUT_PATH"
 fi
-JAVA_OPTS="-Duser.timezone=GMT+08 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:-UseContainerSupport -XX:MaxRAM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes` -XX:ErrorFile=$UNIFIED_OUTPUT_PATH/hs_err_$HOSTNAME.log"
+JAVA_OPTS="-Duser.timezone=$DEFAULT_TIMEZONE -XX:ErrorFile=$UNIFIED_OUTPUT_PATH/hs_err_$HOSTNAME.log"
 
 # 计算 cgroups 设置内存限制 单位 M
 calc_limit_memory () {
@@ -89,7 +88,7 @@ get_gc () {
     elif [ $limit_cpu -gt 1 ] && [ $limit_memory -ge 2048 ]; then
         gc="-XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+CMSClassUnloadingEnabled -XX:+ParallelRefProcEnabled -XX:+CMSScavengeBeforeRemark"
     elif [ $limit_cpu -gt 1 ] && [ $limit_memory -ge 1024 ]; then
-        gc="-XX:+UseParallelGC -XX:+UseAdaptiveSizePolicy -XX:MaxGCPauseMillis=100
+        gc="-XX:+UseParallelGC -XX:+UseAdaptiveSizePolicy -XX:ParallelGCThreads=$limit_cpu -XX:MaxGCPauseMillis=100
 "
     else
         gc="-XX:+UseSerialGC"
