@@ -19,6 +19,14 @@ http://localhost:8080/jvm
 
 ### document
 
+in Dockerfile add
+
+```
+ENV SPRING_BOOT="true" \
+	    DEBUG_PRINT="ture" \
+	    APP_NAME="app.jar" 
+```
+
 应用名
 
 APP_NAME=${APP_NAME:-"app.jar"}
@@ -54,3 +62,7 @@ REMOTE_DEBUG=${REMOTE_DEBUG:-"true"}
 远程调试端口
 
 REMOTE_DEBUG_PORT=${REMOTE_DEBUG_PORT:-5005}
+
+默认时区
+
+DEFAULT_TIMEZONE=${DEFAULT_CPU:-"GMT+08"}
