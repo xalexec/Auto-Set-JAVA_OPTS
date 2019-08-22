@@ -161,11 +161,10 @@ get_remote_debug () {
 get_java_opts () {
     heap_size=`get_heap_size`
     metaspace_size=`get_metaspace_size`
-    gc=`get_gc`
     oom_dump=`get_oom_dump`
     print=`get_print`
     remote_debug=`get_remote_debug`
-    echo "$heap_size $metaspace_size $gc $oom_dump $print $remote_debug $JAVA_OPTS"
+    echo "$heap_size $metaspace_size $oom_dump $print $remote_debug $JAVA_OPTS"
 }
 
 JAVA_OPTS=`get_java_opts`
