@@ -27,6 +27,7 @@ UNIFIED_OUTPUT_PATH=${UNIFIED_OUTPUT_PATH:-"/data"}
 if [ ! -d "$UNIFIED_OUTPUT_PATH" ]; then
   mkdir -p "$UNIFIED_OUTPUT_PATH"
 fi
+JAVA_OPTS=${JAVA_OPTS:-""}
 JAVA_OPTS="-Duser.timezone=$DEFAULT_TIMEZONE -XX:ErrorFile=$UNIFIED_OUTPUT_PATH/hs_err_$HOSTNAME.log ${JAVA_OPTS}"
 
 # 计算 cgroups 设置内存限制 单位 M
