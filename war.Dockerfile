@@ -1,4 +1,4 @@
-FROM tomcat:8.5-jdk8-adoptopenjdk-hotspot
+FROM tomcat:8.5-jdk8-temurin
 
 LABEL author="alex <xalexec@gmail.com>"
 

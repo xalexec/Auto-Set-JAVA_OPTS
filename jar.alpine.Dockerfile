@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine
+FROM eclipse-temurin:8-alpine
 
 LABEL author="alex <xalexec@gmail.com>"
 
